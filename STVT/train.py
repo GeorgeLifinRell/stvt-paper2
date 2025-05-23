@@ -5,6 +5,7 @@ import time
 import datetime
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 import tensorboardX
 import numpy as np
@@ -21,7 +22,6 @@ from STVT.utils import (
     load_model,
     resume_model,
 )
-
 
 pd_epoch = []
 pd_batch_size = []
@@ -194,8 +194,6 @@ def val(model, val_loader, epoch, args):
     print("F_measure_k:")
     print(fscore_k)
 
-
-
 def train(model, train_loader, optimizer, criterion, epoch, args):
 
     global pd_lr
@@ -279,13 +277,11 @@ def train_net(args):
     if args.cuda:
         model.cuda()
 
-
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    # Loss Function
     criterion = nn.CrossEntropyLoss(weight=torch.FloatTensor([A, B])).to(device)
 
-
     print("Start training...")
-
 
     global pd_epoch
     global pd_batch_size
